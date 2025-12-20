@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "19857172539",
+    "project_id": "toolssharingapp",
+    "storage_bucket": "toolssharingapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19857172539:android:c1bea15b7d031ea5fcd41e",
+        "android_client_info": {
+          "package_name": "com.example.toolssharingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "19857172539-gk05oj96vva7qs4b5sgduh5tfleet54a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtkoJEcBPO5jmPL2hJf_tGcli-e_DDbko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "19857172539-gk05oj96vva7qs4b5sgduh5tfleet54a.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "19857172539-fl86q8kfp5e22d9kgk27gnmjbevfce2s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.toolsSharingApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

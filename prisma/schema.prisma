@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  displayName       String
+  locationCity      String
+  locationPostcode  String
+  bio               String?
+  password          String   // Added password field
+  trustTokenBalance Int      @default(5) // Start with 5 tokens
+  averageRating     Float    @default(0.0)
+  totalLendingCount Int      @default(0)
+  totalBorrowingCount Int    @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Relations
+  ownedItems        Item[]
+  borrowingTransactions Transaction[] @relation("BorrowerTransactions")
+  lendingTransactions Transaction[] @relation("LenderTransactions")
+  sentMessages       Message[]
+  receivedReviews    Review[] @relation("ReceivedReviews")
+  givenReviews       Review[] @relation("GivenReviews")
+}
+
+model Item {
+  id                  String   @id @default(cuid())
+  ownerId             String
+  title               String
+  description         String
+  category            String
+  imageUrls           String   // JSON array of image URLs
+  locationCity        String
+  locationPostcode    String
+  isAvailable         Boolean  @default(true)
+  availabilitySchedule String   // JSON object for schedule
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  // Relations
+  owner               User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  transactions        Transaction[]
+}
+
+model Transaction {
+  id           String   @id @default(cuid())
+  itemId       String
+  borrowerId   String
+  lenderId     String
+  startDate    DateTime
+  endDate      DateTime
+  status       String   @default("requested") // requested, accepted, completed, cancelled
+  heldTokenId  String?  // For escrow tracking
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // Relations
+  item         Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  borrower     User     @relation("BorrowerTransactions", fields: [borrowerId], references: [id])
+  lender       User     @relation("LenderTransactions", fields: [lenderId], references: [id])
+  messages     Message[]
+  reviews      Review[]
+}
+
+model Message {
+  id           String   @id @default(cuid())
+  transactionId String
+  senderId     String
+  text         String
+  createdAt    DateTime @default(now())
+  
+  // Relations
+  transaction  Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  sender       User       @relation(fields: [senderId], references: [id])
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  transactionId String
+  reviewerId   String
+  revieweeId   String
+  rating       Int      // 1-5 stars
+  comment      String?
+  createdAt    DateTime @default(now())
+  
+  // Relations
+  transaction  Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  reviewer     User       @relation("GivenReviews", fields: [reviewerId], references: [id])
+  reviewee     User       @relation("ReceivedReviews", fields: [revieweeId], references: [id])
+}
